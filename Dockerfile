@@ -24,6 +24,10 @@ ENV ELASTICSEARCH_TLS_VERIFY False
 ENV ELASTALERT_INDEX elastalert_status
 # ElastAlert user for the container
 ENV ELASTALERT_USER elastalert
+# Path to elasticsearch cert
+ENV ELASTICSEARCH_CERT /etc/elasticsearch/admin-cert
+# Path to elasticsearch key
+ENV ELASTICSEARCH_KEY /etc/elasticsearch/admin-key
 
 # Copy the script used to launch the Elastalert when a container is started.
 COPY ./start-elastalert.sh /opt/
