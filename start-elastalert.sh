@@ -5,14 +5,14 @@ set -e
 retryLimit=60
 
 # Wait until Elasticsearch is online since otherwise Elastalert will fail.
-while [ ${retryLimit} -eq "0" ] && ! curl -XGET -k "https://${ELASTICSEARCH_HOST}:${ELASTICSEARCH_PORT}/" --cert /etc/elasticsearch/admin-cert --key /etc/elasticsearch/admin-key 2>/dev/null
+while ! curl -XGET -k "https://${ELASTICSEARCH_HOST}:${ELASTICSEARCH_PORT}/" --cert /etc/elasticsearch/admin-cert --key /etc/elasticsearch/admin-key 2>/dev/null
 do
 	echo "Waiting for Elasticsearch ${retryLimit}..."
 	sleep 1
 
 	# Fail if no connection after the retry limit.
 	(( retryLimit -= 1 ))
-	if [ $retryLimit -e 0 ] ; then
+	if (( $retryLimit == 0 )) ; then
 	    echo "Retry limit reached. Could not connect to ElasticSearch."
 	    exit -1
 	fi
