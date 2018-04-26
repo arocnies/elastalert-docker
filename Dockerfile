@@ -1,38 +1,45 @@
 FROM python:2
 
-# Directory holding configuration for Elastalert and Supervisor.
-ENV CONFIG_DIR /opt/config
-# Elastalert rules directory.
-ENV RULES_DIRECTORY /opt/rules
-# Elastalert configuration file path in configuration directory.
-ENV ELASTALERT_CONFIG ${CONFIG_DIR}/elastalert.yaml
-# Directory to which Elastalert and Supervisor logs are written.
-ENV LOG_DIR /opt/logs
+# These values you will likely leave alone.
+# -----------------------------------------
 # Elastalert home directory full path.
 ENV ELASTALERT_HOME /opt/elastalert
+RUN mkdir -p ${ELASTALERT_HOME}
+# Directory holding configuration for Elastalert and Supervisor.
+ENV CONFIG_DIR ${ELASTALERT_HOME}/config
+# Directory to which Elastalert and Supervisor logs are written.
+ENV LOG_DIR ${ELASTALERT_HOME}/logs
 # Supervisor configuration file for Elastalert.
 ENV ELASTALERT_SUPERVISOR_CONF ${CONFIG_DIR}/elastalert_supervisord.conf
-# Alias, DNS or IP of Elasticsearch host to be queried by Elastalert. Set in default Elasticsearch configuration file.
-ENV ELASTICSEARCH_HOST elasticsearchhost
-# Port on above Elasticsearch host. Set in default Elasticsearch configuration file.
-ENV ELASTICSEARCH_PORT 9200
-# Use TLS to connect to Elasticsearch (True or False)
-ENV ELASTICSEARCH_TLS False
-# Verify TLS
-ENV ELASTICSEARCH_TLS_VERIFY False
-# ElastAlert writeback index
-ENV ELASTALERT_INDEX elastalert_status
 # ElastAlert user for the container
 ENV ELASTALERT_USER elastalert
-# Path to elasticsearch cert
-ENV ELASTICSEARCH_CERT /etc/elasticsearch/admin-cert
-# Path to elasticsearch key
-ENV ELASTICSEARCH_KEY /etc/elasticsearch/admin-key
 
+# These variables should match your elastalert config.
+# ----------------------------------------------------
+# Alias, DNS or IP of Elasticsearch host to be queried by Elastalert. Set in default Elasticsearch configuration file.
+ENV ELASTICSEARCH_HOST logging-es
+# Port on above Elasticsearch host. Set in default Elasticsearch configuration file.
+ENV ELASTICSEARCH_PORT 9200
+# Path to Elasticsearch cert. This value must match the elastalert config file.
+ENV ELASTICSEARCH_CERT /etc/elasticsearch/admin-cert
+# Path to Elasticsearch key. This value must match the elastalert config file.
+ENV ELASTICSEARCH_KEY /etc/elasticsearch/admin-key
+# Elastalert rules directory. This value must match the elastalert config file.
+ENV RULES_DIRECTORY ${ELASTALERT_HOME}/rules
+
+# You may want to customize these values for your deployment.
+# ----------------------------------------------------------
+# Elastalert configuration file path in configuration directory.
+ENV ELASTALERT_CONFIG ${CONFIG_DIR}/elastalert.yaml
+# ElastAlert writeback index
+ENV ELASTALERT_INDEX elastalert_status
+
+# Installation.
+# -------------
 # Copy the script used to launch the Elastalert when a container is started.
 COPY ./start-elastalert.sh /opt/
 # Copy supervisord conf
-COPY ./supervisord.conf ${CONFIG_DIR}/elastalert_supervisord.conf
+COPY ./supervisord.conf ${ELASTALERT_SUPERVISOR_CONF}
 
 WORKDIR "${ELASTALERT_HOME}"
 
