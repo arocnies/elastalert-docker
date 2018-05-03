@@ -25,7 +25,7 @@ ENV ELASTICSEARCH_CERT /etc/elasticsearch/admin-cert
 # Path to Elasticsearch key. This value must match the elastalert config file.
 ENV ELASTICSEARCH_KEY /etc/elasticsearch/admin-key
 # Elastalert rules directory. This value must match the elastalert config file.
-ENV RULES_DIRECTORY ${ELASTALERT_HOME}/rules
+ENV RULES_DIRECTORY /opt/rules
 
 # You may want to customize these values for your deployment.
 # ----------------------------------------------------------

@@ -23,7 +23,7 @@ sleep 5
 if ! curl -XGET -k "https://${ELASTICSEARCH_HOST}:${ELASTICSEARCH_PORT}/elastalert_status" --cert ${ELASTICSEARCH_CERT} --key ${ELASTICSEARCH_KEY} 2>/dev/null
 then
 	echo "\nCreating Elastalert index in Elasticsearch..."
-    elastalert-create-index --config ${ELASTALERT_CONFIG} --index elastalert_status --old-index ""
+    elastalert-create-index --config ${ELASTALERT_CONFIG} --index ${ELASTALERT_INDEX}
 else
     echo "\nElastalert index already exists in Elasticsearch."
 fi
